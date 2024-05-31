@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Лабораторная работа #1 - Web-Programming</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u041b\u0430\u0431\u043e\u0440\u0430\u0442\u043e\u0440\u043d\u0430\u044f \u0440\u0430\u0431\u043e\u0442\u0430 #1";
+        var mkdocs_page_input_path = "lab-1.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Web-Programming
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Добро пожаловать!</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Лабораторная работа #1</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">Практические работы</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">Задание</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">Структура проекта</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_4">Ход работы</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">Модели данных</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#api">API</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#jwt">JWT</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#alembic">Alembic</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../lab-2/">Лабораторная работа #2</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Web-Programming</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Лабораторная работа #1</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="1">Лабораторная работа #1</h1>
+<h2 id="_1">Практические работы</h2>
+<ul>
+<li><a href="../pw1/">Практическая работа 1</a></li>
+<li><a href="../pw2/">Практическая работа 2</a></li>
+<li><a href="../pw3/">Практическая работа 3</a></li>
+</ul>
+<h2 id="_2">Задание</h2>
+<p>Cоздать веб-приложение, которое позволит пользователям обмениваться книгами между собой. Это приложение должно облегчать процесс обмена книгами, позволяя пользователям находить книги, которые им интересны, и находить новых пользователей для обмена книгами.</p>
+<p>Функционал веб-приложения должен включать следующее:</p>
+<ul>
+<li><strong>Создание профилей</strong>: Возможность пользователям создавать профили, указывать информацию о себе, своих навыках, опыте работы и предпочтениях по проектам.</li>
+<li><strong>Добавление книг в библиотеку</strong>: Пользователи могут добавлять книги, которыми они готовы поделиться, в свою виртуальную библиотеку на платформе.</li>
+<li><strong>Поиск и запросы на обмен</strong>: Функционал поиска книг в библиотеке других пользователей. Возможность отправлять запросы на обмен книгами другим пользователям.</li>
+<li><strong>Управление запросами и обменами</strong>: Возможность просмотра и управления запросами на обмен. Возможность подтверждения или отклонения запросов на обмен.</li>
+</ul>
+<h2 id="_3">Структура проекта</h2>
+<pre><code>.
+├── alembic.ini
+├── database.py
+├── dependencies
+│   ├── __init__.py
+│   ├── auth.py
+│   └── hashing.py
+├── main.py
+├── migrations
+│   ├── README
+│   ├── env.py
+│   ├── script.py.mako
+│   └── versions
+├── models.py
+├── requirements.txt
+├── routers
+│   ├── __init__.py
+│   ├── auth.py
+│   ├── books.py
+│   ├── boxes.py
+│   ├── crossings.py
+│   ├── tags.py
+│   └── users.py
+└── schemas.py
+</code></pre>
+<h2 id="_4">Ход работы</h2>
+<h3 id="_5">Модели данных</h3>
+<p>Перед описанием самих моделей, была составлена схема базы данных со связями many-to-many и one-to-many.
+<img alt="image" src="../DB-schema%20for%20Web-ICT.jpg" /></p>
+<p>Для описания моделей была использована библиотека SQLAlchemy.</p>
+<p>Создадим сущность книги со следующими полями. У данной сущности есть связь с тэгами.</p>
+<pre><code class="language-python">class Book(Base):
+    __tablename__ = &quot;books&quot;
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, index=True)
+    author = Column(String, index=True)
+    description = Column(String, index=True)
+
+    tags = relationship(&quot;Tag&quot;, secondary=&quot;books_tags&quot;)
+</code></pre>
+<p>Таблица для хранения пользователей выглядит следующим образом. Важно учесть, что поле <code>email</code> будет уникальным. У пользователя есть связь с тем, какие книги он может иметь. Поле <code>registration_date</code> автоматически записывается. </p>
+<pre><code class="language-python">class User(Base):
+    __tablename__ = &quot;users&quot;
+
+    id = Column(Integer, primary_key=True)
+    email = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+    first_name = Column(String, index=True)
+    last_name = Column(String, index=True)
+    is_active = Column(Boolean, default=True)
+
+    registration_date = Column(DateTime(timezone=True), server_default=func.now())
+
+    books = relationship(Book, secondary=&quot;book_ownership&quot;)
+</code></pre>
+<p>Так как создаем сервис для буккросинга, то есть некие боксы, в которых и происходит обмен книг.</p>
+<pre><code class="language-python">class Box(Base):
+    __tablename__ = &quot;boxes&quot;
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, index=True)
+    address = Column(String, index=True)
+</code></pre>
+<p>Таблица тэгов описана следующим образом.</p>
+<pre><code class="language-python">class Tag(Base):
+    __tablename__ = &quot;tags&quot;
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, index=True)
+    description = Column(String, index=True)
+</code></pre>
+<p>В данной таблице мы связываем книги и тэги, образовывая связь many-to-many.</p>
+<pre><code class="language-python">class BooksTags(Base):
+    __tablename__ = &quot;books_tags&quot;
+
+    book_id = Column(Integer, ForeignKey('books.id'), primary_key = True)
+    tag_id = Column(Integer, ForeignKey('tags.id'), primary_key = True)
+</code></pre>
+<p>В данной книге мы записываем владение книг пользователями.</p>
+<pre><code class="language-python">class BookOwnership(Base):
+    __tablename__ = &quot;book_ownership&quot;
+
+    user_id = Column(Integer, ForeignKey('users.id'), primary_key = True)
+    book_id = Column(Integer, ForeignKey('books.id'), primary_key = True)
+    edition_year = Column(Integer)
+    condition = Column(SQLEnum(BookConditionEnum))
+</code></pre>
+<p>Здесь представлена таблица самих кроссингов (транзакции обмена книг).</p>
+<pre><code class="language-python">class Crossing(Base):
+    __tablename__ = &quot;crossings&quot;
+
+    id = Column(Integer, primary_key=True)
+    available_book_id = Column(Integer, ForeignKey('books.id'))
+    owner_id = Column(Integer, ForeignKey('users.id'))
+    recepient_id = Column(Integer, ForeignKey('users.id'))
+    box_id = Column(Integer, ForeignKey('boxes.id'))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    book = relationship(&quot;Book&quot;, foreign_keys=[available_book_id])
+    owner = relationship(&quot;User&quot;, foreign_keys=[owner_id])
+    recepient = relationship(&quot;User&quot;, foreign_keys=[recepient_id])
+    box = relationship(&quot;Box&quot;, foreign_keys=[box_id])
+</code></pre>
+<h3 id="api">API</h3>
+<p>В качестве примера эндпоинтов и реализации CRUD, возьмем книги.</p>
+<p>Для разделения логики, воспользуемся классом <code>APIRouter</code>. При инициализации данного класса, указываем префикс <code>/books</code>, чтобы не указывать префиксный путь в последующих эндпоинтов.</p>
+<pre><code class="language-python">router = APIRouter(prefix=&quot;/books&quot;)
+</code></pre>
+<p>Далее предсталены модели pydentic, которые используются для ответов сервера и получения данных.</p>
+<pre><code class="language-python">class BookBase(BaseModel):
+    name: str
+    author: str
+    description: str
+
+
+class BookCreate(BookBase):
+    tag_ids: list[int]
+    pass
+
+
+class BookRead(BookBase):
+    id: int
+    tags: list[TagRead] = []
+
+    class Config:
+        orm_mode = True
+</code></pre>
+<p>Для создания книги представлен следующий POST эндпоинт.</p>
+<pre><code class="language-python">@router.post(&quot;/&quot;, response_model=BookRead)
+def create_book(book: BookCreate, db = Depends(get_session)) -&gt; BookRead:
+    tag_ids = book.tag_ids
+    del book.tag_ids
+    db_book = Book(**book.model_dump())
+    db.add(db_book)
+    db.commit()
+    db.refresh(db_book)
+
+    for tag_id in tag_ids:
+        db_books_tags = BooksTags(book_id=db_book.id, tag_id=tag_id)
+        db.add(db_books_tags)
+        db.commit()
+
+    return db_book
+</code></pre>
+<p>Для отображения всех книг, данный эднпоинт.  </p>
+<pre><code class="language-python">@router.get(&quot;/&quot;, response_model=list[BookRead])
+def list_books(skip: int = 0, limit: int = 100, db = Depends(get_session)):
+    books = db.query(Book).offset(skip).limit(limit).all()
+    return books
+</code></pre>
+<p>Для отображения конкретной книги по id.  </p>
+<pre><code class="language-python">@router.get(&quot;/{book_id}&quot;, response_model=BookRead)
+def read_book(book_id: int, db = Depends(get_session)) -&gt; BookRead:
+    book = db.query(Book).filter(Book.id == book_id).first()
+    if not book:
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=&quot;The book was not found&quot;)
+    return book
+</code></pre>
+<p>Обновление книги выглядит следующим образом.</p>
+<pre><code class="language-python">@router.put(&quot;/{book_id}&quot;, response_model=BookRead)
+def update_book(book_id: int, updated_book: BookCreate, db = Depends(get_session)) -&gt; BookRead:
+    tag_ids = updated_book.tag_ids
+    del updated_book.tag_ids
+    book = db.query(Book).filter(Book.id == book_id).first()
+    if not book:
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=&quot;The book was not found&quot;)
+    db.query(Book).filter(Book.id == book_id).update(updated_book.dict(exclude_unset=True),
+                                                     synchronize_session=False)
+    db.commit()
+    db.refresh(book)
+
+    db.query(BooksTags).filter(BooksTags.book_id == book_id).delete(synchronize_session=False)
+    for tag_id in tag_ids:
+        db_books_tags = BooksTags(book_id=book_id, tag_id=tag_id)
+        db.add(db_books_tags)
+        db.commit()
+
+    return book
+</code></pre>
+<p>Эндпоинт для удаления книги.</p>
+<pre><code class="language-python">@router.delete(&quot;/{book_id}&quot;, response_model=DeleteResponse)
+def delete_book(book_id: int, db = Depends(get_session)) -&gt; DeleteResponse:
+    book = db.query(Book).filter(Book.id == book_id).first()
+    if not book:
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=&quot;The book was not found&quot;)
+    db.delete(book)
+    db.commit()
+    return DeleteResponse(message=&quot;The book was deleted successfully&quot;)
+</code></pre>
+<h3 id="jwt">JWT</h3>
+<p>Для реализации JWT-токенов в приложении были использованы следующие библиотеки: <code>pyjwt</code>, <code>passlib</code>.
+Последняя нужна для хэширвоания паролей при помощи алгоритма <code>HS256</code>, где указывается секретный ключ.</p>
+<p>Далее прдсталвена логика верификации и хэширования паролей.</p>
+<pre><code class="language-python">from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=[&quot;bcrypt&quot;], deprecated=&quot;auto&quot;)
+
+def verify_password(plain_password, hashed_password) -&gt; bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def hash_password(plain_password) -&gt; str:
+    return pwd_context.hash(plain_password)
+</code></pre>
+<p>На следующем сниппете кода представлена логика генерирования JWT-токена.</p>
+<pre><code class="language-python">import os
+from dotenv import load_dotenv
+from jose import jwt
+
+from datetime import datetime, timedelta, timezone
+
+load_dotenv()
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode.update({&quot;exp&quot;: expire})
+    encoded_jwt = jwt.encode(to_encode, os.environ[&quot;JWT_SECRET_KEY&quot;], algorithm=&quot;HS256&quot;)
+    return encoded_jwt
+</code></pre>
+<p>Здесь предсталвена логика аутентификации пользователя с учетом проверки на валидность введеного пароля и генерацией JWT-токена.</p>
+<pre><code class="language-python">@router.post(&quot;&quot;)
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db = Depends(get_session)
+) -&gt; Token:
+
+    def authenticate_user(db, email: str, password: str):
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            return False
+        if not verify_password(password, user.hashed_password):
+            return False
+        return user
+
+    user = authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=&quot;Incorrect username or password&quot;,
+            headers={&quot;WWW-Authenticate&quot;: &quot;Bearer&quot;},
+        )
+    access_token_expires = timedelta(minutes=30)
+    access_token = create_access_token(
+        data={&quot;sub&quot;: user.email}, expires_delta=access_token_expires
+    )
+    return Token(access_token=access_token, token_type=&quot;bearer&quot;)
+</code></pre>
+<p>Здесь указана зависимость, которая используется для расшифровки и проверки JWT-токена с последующим получением вошедшего пользователя.</p>
+<pre><code class="language-python">async def get_current_user(token: str = Depends(oauth2_scheme), db = Depends(get_session)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=&quot;Could not validate credentials&quot;,
+        headers={&quot;WWW-Authenticate&quot;: &quot;Bearer&quot;},
+    )
+    try:
+        payload = jwt.decode(token, os.environ[&quot;JWT_SECRET_KEY&quot;], algorithms=[&quot;HS256&quot;])
+        username: str = payload.get(&quot;sub&quot;)
+        if username is None:
+            raise credentials_exception
+        token_data = TokenData(username=username)
+    except JWTError:
+        raise credentials_exception
+    user = db.query(User).filter(User.email == token_data.username).first()
+    if user is None:
+        raise credentials_exception
+    return user
+</code></pre>
+<h3 id="alembic">Alembic</h3>
+<p>Настроим работу с миграциями БД при помощи библиотеки <code>alembic</code></p>
+<pre><code>alembic init migrations &amp; alembic upgrade head
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Добро пожаловать!"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../lab-2/" class="btn btn-neutral float-right" title="Лабораторная работа #2">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../lab-2/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

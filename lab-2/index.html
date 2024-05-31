@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Лабораторная работа #2 - Web-Programming</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u041b\u0430\u0431\u043e\u0440\u0430\u0442\u043e\u0440\u043d\u0430\u044f \u0440\u0430\u0431\u043e\u0442\u0430 #2";
+        var mkdocs_page_input_path = "lab-2.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Web-Programming
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Добро пожаловать!</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../lab-1/">Лабораторная работа #1</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Лабораторная работа #2</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">Задание</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1">Задача 1</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_2">Решение</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_1">Задача 2</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_3">Решение</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Web-Programming</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Лабораторная работа #2</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="2">Лабораторная работа #2</h1>
+<h2 id="_1">Задание</h2>
+<h3 id="1">Задача 1</h3>
+<p>Напишите три различных программы на Python, использующие каждый из подходов: threading, multiprocessing и async. Каждая программа должна решать считать сумму всех чисел от 1 до 1000000. Разделите вычисления на несколько параллельных задач для ускорения выполнения.</p>
+<h4 id="_2">Решение</h4>
+<p>В качестве <code>calculate_sum</code> представлена данная функция, которая суммирует часла в определенном промежутке. Данная функция присутствует во всех подходах реализации. Единственное, в <code>sum_multi</code> и <code>sum_async</code> нет третьего агрумента result, а просто возвращается переменная <code>total</code>.</p>
+<pre><code class="language-python">def calculate_sum(start, end, result):
+    total = 0
+    for i in range(start, end):
+        total += i
+    result.append(total)
+</code></pre>
+<h5 id="threading">Threading</h5>
+<p>Определям нужный нам отрезок, который мы хотим просуммировать. Далее разбивает его на чанки (10^5). Каждый чанк создается отдельный поток. А результат записывается в список <code>result</code>, который мы суммируем после исполнения всех потоков.</p>
+<pre><code class="language-python">def main():
+    result = []
+    threads = []
+    chunk_size = 10**5
+
+    for i in range(0, 10**6, chunk_size):
+        t = Thread(target=calculate_sum, args=(i+1, i+chunk_size+1, result))
+
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
+
+    print(&quot;Result of sum:&quot;, sum(result))
+</code></pre>
+<h5 id="multiprocessing">Multiprocessing</h5>
+<p>Точно так же, как и в первой реализации, мы разбиваем отрезок чисел на чанки (10^5). В данном случае, мы создаем пул, где указываем количество процессов равным количеству получившихся чанков. Далее, в пуле активируем метод calculate_sum с аргументами и записываем результаты в список <code>result</code>.</p>
+<pre><code class="language-python">def main():
+    chunk_size = 10**5
+
+    pool = Pool(processes=10**6 // chunk_size)
+    result = [pool.apply(calculate_sum, (i+1, i+chunk_size+1)) for i in range(0, 10**6, chunk_size)]
+
+    print(&quot;Result of sum:&quot;, sum(result))
+</code></pre>
+<h5 id="asyncio">Asyncio</h5>
+<p>Объявляем <code>calculate_sum</code> как коротину. Затем, для каждого чанка создаем <code>Task</code> и записываем их в список, ожидая исполнения. Далее, просто выводим суммируемый список. </p>
+<pre><code class="language-python">async def calculate_sum(start, end):
+    total = 0
+    for i in range(start, end):
+        total += i
+    return total
+
+async def main():
+    tasks = []
+    chunk_size = 10**5
+
+    for i in range(0, 10**6, chunk_size):
+        task = asyncio.create_task(calculate_sum(i+1, i+chunk_size+1))
+        tasks.append(task)
+
+    result = await asyncio.gather(*tasks)
+
+    print(&quot;Result of sum:&quot;, sum(result))
+</code></pre>
+<h5 id="benchmark">Benchmark</h5>
+<p>Напишем benchmark для замера эффективности разных подходов. Ниже представлена сама функция, принимающая функцию, исполняющую конкретный подход.</p>
+<pre><code class="language-python">def benchmark(func, name):
+    start_time = time.perf_counter()
+    func()
+    end_time = time.perf_counter()
+    print(f&quot;{name} ended in {end_time - start_time:.4f} seconds&quot;)
+</code></pre>
+<p>Далее, вызываем <code>benchmark</code> для каждого импортированного подхода.</p>
+<pre><code class="language-python">if __name__ == &quot;__main__&quot;:
+    benchmark(threading_main, &quot;Threading&quot;)
+    benchmark(multi_main, &quot;Multiprocessing&quot;)
+    benchmark(partial(asyncio.run, async_main()), &quot;Asyncio&quot;)
+</code></pre>
+<p>В качестве результата получилось следующее.</p>
+<pre><code class="language-sh">Result of sum: 500000500000
+Threading ended in 0.0294 seconds
+
+Result of sum: 500000500000
+Multiprocessing ended in 0.1709 seconds
+
+Result of sum: 500000500000
+Asyncio ended in 0.0272 seconds
+</code></pre>
+<p>Самым эффективным оказался <code>multiprocessing</code>.</p>
+<h3 id="2_1">Задача 2</h3>
+<p>Напишите программу на Python для параллельного парсинга нескольких веб-страниц с сохранением данных в базу данных с использованием подходов threading, multiprocessing и async. Каждая программа должна парсить информацию с нескольких веб-сайтов, сохранять их в базу данных.</p>
+<h4 id="_3">Решение</h4>
+<h5 id="_4">Класс паресров</h5>
+<p>Создадим абстрактый класс парсера, который определяет синхронный и асинхронный сетоды для парсинга книг.</p>
+<pre><code class="language-python">class AbstractParser(ABC):
+    base_url: str
+
+    @abstractmethod
+    def parse(self) -&gt; list[Book]:
+        ...
+
+    @abstractmethod
+    async def async_parse(self) -&gt; list[Book]:
+        ...
+</code></pre>
+<p>Создадим базовый класс парсера, который будет определять методы для парсинга данных с ресурса.</p>
+<pre><code class="language-python">class BaseParser(AbstractParser):
+    base_url: str
+
+    def get_soup(self) -&gt; BeautifulSoup:
+        return BeautifulSoup(requests.get(self.base_url).text, &quot;html.parser&quot;)
+
+    async def async_get_soup(self) -&gt; BeautifulSoup:
+        async with aiohttp.ClientSession() as client:
+            async with client.get(self.base_url) as resp:
+                return BeautifulSoup(await resp.read(), &quot;html.parser&quot;)
+
+    def parse(self) -&gt; list[Book]:
+        return self._parse(self.get_soup())
+
+    async def async_parse(self) -&gt; list[Book]:
+        return self._parse(await self.async_get_soup())
+</code></pre>
+<p>Создадим класс для парсинга книг с сайта <a href="https://www.labirint.ru/books/">Лабирит</a>.</p>
+<pre><code class="language-python">class LabirintParser(BaseParser):
+    def __init__(self):
+        self.base_url = &quot;https://www.labirint.ru/books/&quot;
+
+    def _parse(self, soup: BeautifulSoup):
+        el = soup.find_all(&quot;div&quot;, class_=&quot;product&quot;, attrs={&quot;data-sgenre-name&quot;: &quot;книга&quot;} )
+
+        parsed_books = []
+
+        for book in el:
+            name = book[&quot;data-name&quot;]
+            div_author = book.find(&quot;div&quot;, class_=&quot;product-author&quot;)
+            if not div_author:
+                continue
+            author = div_author.find(&quot;a&quot;)[&quot;title&quot;]
+            description = book[&quot;data-first-genre-name&quot;]
+
+            parsed_books.append(
+                Book(name=name, author=author, description=description)
+            )
+
+        return parsed_books
+</code></pre>
+<p>Создадим второй класс для парсинга книг с сайта <a href="https://book24.ru/knigi-bestsellery/">Book24</a>.</p>
+<pre><code class="language-python">class Book24Parser(BaseParser):
+    def __init__(self):
+        self.base_url = &quot;https://book24.ru/knigi-bestsellery/&quot;
+
+    def _parse(self, soup: BeautifulSoup):
+        el = soup.find_all(&quot;div&quot;, class_=&quot;product-card__content&quot;)
+
+        parsed_books = []
+
+        for book in el:
+            name = book.find(&quot;a&quot;)[&quot;title&quot;]
+            a_author = book.find(&quot;a&quot;, class_=&quot;author-list__item smartLink&quot;)
+            if not a_author:
+                continue
+            author = a_author.text
+
+            parsed_books.append(
+                Book(name=name, author=author)
+            )
+
+        return parsed_books
+</code></pre>
+<h5 id="threading_1">Threading</h5>
+<p>В программе для парсинга при помощи потоков, в каждый поток мы передаем объект класса парсера и в данном потоке сохраняем результаты в базу данных.</p>
+<pre><code class="language-python">import threading
+from conn import get_session, init_db
+from parser import AbstractParser, LabirintParser, Book24Parser
+
+def parse_with_db_save(parser: AbstractParser, session):
+    parsed_data = parser.parse()
+    for d in parsed_data:
+        session.add(d)
+    session.commit()
+
+def main():
+    labirint_parser = LabirintParser()
+    book24_parser = Book24Parser()
+    session = next(get_session())
+    thread1 = threading.Thread(target=parse_with_db_save, args=(labirint_parser, session))
+    thread2 = threading.Thread(target=parse_with_db_save, args=(book24_parser, session))
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
+
+if __name__ == &quot;__main__&quot;:
+    init_db()
+    main()
+</code></pre>
+<h5 id="multiprocessing_1">Multiprocessing</h5>
+<p>В коде программы для парсинга данных из разных процессов нам необходимо создавать сессию переключения к базе данных внутри функции <code>parse_with_db_save</code>.</p>
+<pre><code class="language-python">import multiprocessing
+from conn import get_session, init_db
+from parser import AbstractParser, LabirintParser, Book24Parser
+
+def parse_with_db_save(parser: AbstractParser):
+    parsed_data = parser.parse()
+    session = next(get_session())
+    for d in parsed_data:
+        session.add(d)
+    session.commit()
+
+def main():
+    blockchain_parser = LabirintParser()
+    btc_parser = Book24Parser()
+    process1 = multiprocessing.Process(target=parse_with_db_save, args=(blockchain_parser,))
+    process2 = multiprocessing.Process(target=parse_with_db_save, args=(btc_parser,))
+    process1.start()
+    process2.start()
+    process1.join()
+    process2.join()
+
+if __name__ == &quot;__main__&quot;:
+    init_db()
+    main()
+</code></pre>
+<h5 id="asyncio_1">Asyncio</h5>
+<p>В случае с асинхронным методом, нам нужно написать дополнительный код, который будет создавать асинхронное подключение к базе данных.</p>
+<pre><code class="language-python">import os
+from dotenv import load_dotenv
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
+
+load_dotenv()
+
+engine = create_async_engine(os.environ[&quot;ASYNC_SQLALCHEMY_DATABASE_URL&quot;])
+
+asyncSessionLocal = sessionmaker(
+    class_=AsyncSession, autocommit=False, autoflush=False, bind=engine
+)
+
+Base = declarative_base()
+
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+
+async def get_session():
+    async with asyncSessionLocal() as session:
+        yield session
+</code></pre>
+<p>Далее, напишем код, который создаст несколько объектов <code>Task</code> и дождется их выполнения.</p>
+<pre><code class="language-python">async def parse_with_db_save(parser: AbstractParser, session: AsyncSession):
+    parsed_data = await parser.async_parse()
+    for d in parsed_data:
+        session.add(d)
+    await session.commit()
+
+async def main():
+    labirint_parser = LabirintParser()
+    book24_parser = Book24Parser()
+    session = await anext(get_session())
+    task1 = aio.create_task(parse_with_db_save(labirint_parser, session))
+    task2 = aio.create_task(parse_with_db_save(book24_parser, session))
+    await aio.gather(task1, task2)
+
+if __name__ == &quot;__main__&quot;:
+    aio.run(main())
+</code></pre>
+<h5 id="benchmark_1">Benchmark</h5>
+<p>Используем код из первого задания для замера эффективности программ.</p>
+<pre><code class="language-python">import time
+import asyncio
+from parse_threading import main as threading_main
+from parse_multi import main as multi_main
+from parse_async import main as async_main
+from conn import init_db
+from functools import partial
+
+def benchmark(func, name):
+    start_time = time.perf_counter()
+    func()
+    end_time = time.perf_counter()
+    print(f&quot;{name} ended in {end_time - start_time:.4f} seconds&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    init_db()
+    benchmark(threading_main, &quot;Threading&quot;)
+    benchmark(multi_main, &quot;Multiprocessing&quot;)
+    benchmark(partial(asyncio.run, async_main()), &quot;Asyncio&quot;)
+</code></pre>
+<p>Вывод benchmark получился такой.</p>
+<pre><code class="language-sh">Threading ended in 1.7869 seconds
+
+Multiprocessing ended in 1.9192 seconds
+
+Asyncio ended in 1.6669 seconds
+</code></pre>
+<p>В этом задании решение с использованием библиотеки <code>multiprocessing</code> оказалось самым медленным. Это произошло из-за того, что количество сайтов было небольшим, и накладные расходы на создание новых процессов значительно повлияли на производительность.</p>
+<p><code>Threading</code> получился медленее чем asyncio, вероятнее всего, из-за переключения между потоками.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../lab-1/" class="btn btn-neutral float-left" title="Лабораторная работа #1"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../lab-1/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
