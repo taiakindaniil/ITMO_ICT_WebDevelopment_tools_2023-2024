@@ -3,7 +3,7 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
-from dependencies import hash_password
+from dependencies import hash_password, verify_password
 from database import get_session
 
 from models import User, Book, BookOwnership
@@ -11,7 +11,7 @@ from schemas import UserCreate, UserRead, UserUpdate, DeleteResponse, UserBooksR
 
 from .auth import get_current_user
 
-router = APIRouter(prefix="/users")
+router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.get("/me/", response_model=UserRead)
@@ -44,6 +44,17 @@ def update_me(updated_user: UserUpdate, db = Depends(get_session), current_user:
     
     return user
 
+
+@router.put("/change-password")
+def change_password(current_password: str, new_password: str, db = Depends(get_session), current_user: UserRead = Depends(get_current_user)):
+    if not verify_password(current_password, current_user.hashed_password):
+        return HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail="Your password is incorrect")
+    db.query(User).filter(User.id == current_user.id).update({"hashed_password": hash_password(new_password)},
+                                                             synchronize_session=False)
+    db.commit()
+
+    return { "message": "Your password has been changed" }
+    
 
 @router.delete("/", response_model=DeleteResponse)
 def delete_me(db = Depends(get_session), current_user: UserRead = Depends(get_current_user)) -> DeleteResponse:

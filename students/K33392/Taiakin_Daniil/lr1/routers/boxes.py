@@ -7,7 +7,7 @@ from database import get_session
 from models import Box
 from schemas import BoxRead, BoxCreate, DeleteResponse
 
-router = APIRouter(prefix="/boxes")
+router = APIRouter(prefix="/boxes", tags=["boxes"])
 
 @router.get("/", response_model=list[BoxRead])
 def read_boxes(skip: int = 0, limit: int = 100, db = Depends(get_session)):

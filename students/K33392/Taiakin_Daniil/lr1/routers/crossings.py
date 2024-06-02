@@ -7,7 +7,7 @@ from database import get_session
 from models import Crossing
 from schemas import CrossingRead, CrossingCreate, DeleteResponse
 
-router = APIRouter(prefix="/crossings")
+router = APIRouter(prefix="/crossings", tags=["crossings"])
 
 @router.get("/", response_model=list[CrossingRead])
 def list_crossings(skip: int = 0, limit: int = 100, db = Depends(get_session)):

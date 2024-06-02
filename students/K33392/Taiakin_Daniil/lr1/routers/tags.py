@@ -7,7 +7,7 @@ from database import get_session
 from models import Tag
 from schemas import TagRead, TagCreate, DeleteResponse
 
-router = APIRouter(prefix="/tags")
+router = APIRouter(prefix="/tags", tags=["tags"])
 
 
 @router.get("/", response_model=list[TagRead])

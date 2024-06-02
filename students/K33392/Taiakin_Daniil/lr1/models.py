@@ -55,8 +55,6 @@ class Tag(Base):
     name = Column(String, index=True)
     description = Column(String, index=True)
 
-    # books = relationship("Book", secondary="books_tags")
-
 
 class BooksTags(Base):
     __tablename__ = "books_tags"
@@ -73,9 +71,6 @@ class BookOwnership(Base):
     book_id = Column(Integer, ForeignKey('books.id'), primary_key = True)
     edition_year = Column(Integer)
     condition = Column(SQLEnum(BookConditionEnum))
-
-    # book = relationship("Book", foreign_keys=[book_id])
-    # user = relationship("User", foreign_keys=[user_id])
 
 
 class Crossing(Base):

@@ -160,4 +160,4 @@ def update_skill(skill_id: int, skill: Skill, session: Session = Depends(get_ses
 def delete_skill(skill_id: int, session: Session = Depends(get_session)) -> MessageResponse:
     session.delete(session.get(Skill, skill_id))
     session.commit()
-    return {"message": "Skill deleted"}
+    return {"message": "Skill was deleted"}

@@ -15,7 +15,7 @@ from models import User
 
 load_dotenv()
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth")
 

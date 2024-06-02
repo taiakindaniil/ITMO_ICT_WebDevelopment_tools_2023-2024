@@ -7,7 +7,7 @@ from database import get_session
 from models import Book, BooksTags
 from schemas import BookRead, BookCreate, DeleteResponse
 
-router = APIRouter(prefix="/books")
+router = APIRouter(prefix="/books", tags=["books"])
 
 
 @router.get("/", response_model=list[BookRead])
@@ -22,6 +22,14 @@ def read_book(book_id: int, db = Depends(get_session)) -> BookRead:
     if not book:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="The book was not found")
     return book
+
+
+@router.get("/search/{q}", response_model=list[BookRead])
+def search_book(q: str, db = Depends(get_session)):
+    books = db.query(Book).filter(Book.name.contains(q)).all()
+    if books == []:
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Oops... nothing found :(")
+    return books
 
 
 @router.post("/", response_model=BookRead)
