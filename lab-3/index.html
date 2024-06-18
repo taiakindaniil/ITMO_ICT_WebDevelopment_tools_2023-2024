@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Лабораторная работа #3 - Web-Programming</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u041b\u0430\u0431\u043e\u0440\u0430\u0442\u043e\u0440\u043d\u0430\u044f \u0440\u0430\u0431\u043e\u0442\u0430 #3";
+        var mkdocs_page_input_path = "lab-3.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Web-Programming
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Добро пожаловать!</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../lab-1/">Лабораторная работа #1</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../lab-2/">Лабораторная работа #2</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Лабораторная работа #3</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">Задание</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">Решение</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#rest-api">REST API для парсера</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">Эндпоинт для обращения к парсеру</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#dockerfile-backend">Dockerfile для backend</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#dockerfile">Dockerfile для парсера</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#composeyaml">compose.yaml</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Web-Programming</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Лабораторная работа #3</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="3">Лабораторная работа #3</h1>
+<h2 id="_1">Задание</h2>
+<p>Научиться упаковывать FastAPI приложение в Docker, интегрировать парсер данных с базой данных и вызывать парсер через API и очередь.</p>
+<h2 id="_2">Решение</h2>
+<h3 id="rest-api">REST API для парсера</h3>
+<p>Напишем fast api приложения для парсера, чтобы можно было вызывать его по rest api. Для этого, создадим модель данных в виде enum, которую будем ожидать от клиента. Добавим эндпоинт <code>/parse</code>.</p>
+<p>Данный эндпоинт принимает название парсера и в ответ выводит список книг.</p>
+<pre><code class="language-python">from fastapi import FastAPI
+from fastapi.exceptions import HTTPException
+from parser import LabirintParser, Book24Parser
+from pydantic import BaseModel
+from enum import Enum
+
+app = FastAPI()
+
+
+class ParserType(Enum):
+    LABIRINT = &quot;labirint&quot;
+    BOOK24 = &quot;book24&quot;
+
+    def get_parser(self) -&gt; LabirintParser | Book24Parser | None:
+        if self.value == &quot;labirint&quot;:
+            return LabirintParser()
+        if self.value == &quot;book24&quot;:
+            return Book24Parser()
+        return None
+
+
+class ParseRequest(BaseModel):
+    parser: ParserType
+
+
+@app.post(&quot;/parse&quot;)
+async def parse(data: ParseRequest):
+    if (parser := data.parser.get_parser()) is None:
+        raise HTTPException(500, &quot;Invalid parser specified&quot;)
+    return [i.model_dump() for i in await parser.async_parse()]
+</code></pre>
+<h3 id="_3">Эндпоинт для обращения к парсеру</h3>
+<p>Создадим эндпоинт в основном приложении, который будет обращаться к паресру для получения списка книг.</p>
+<pre><code class="language-python">@router.post(&quot;&quot;)
+async def parse(req: ParseRequest):
+    async with aiohttp.ClientSession() as client:
+        async with client.post(&quot;http://parser-api:8080/parse&quot;, json=dict(req)) as resp:
+            return await resp.json()
+</code></pre>
+<p>Теперь реализуем эндпоинты для синхронного и асинхронного выполнения задач в Celery.</p>
+<p>Синхронный метод будет отправлять задачу в очередь и ожидать получения результата в течение 10 секунд.</p>
+<p>Асинхронный эндпоинт создает задачу и возвращает список из идентификаторов.</p>
+<pre><code class="language-python">@router.post(&quot;/celery/sync&quot;)
+def parse_celery_sync(req: ParseRequest):
+    result = app.send_task(&quot;tasks.parse&quot;, args=[req.parser])
+    return result.get(timeout=10)
+
+@router.post(&quot;/celery/async&quot;)
+def parse_async(req: ParseRequest):
+    task = app.send_task(&quot;tasks.parse&quot;, args=[req.parser])
+    return task.as_list()
+</code></pre>
+<p>Также создадим get-запрос, который возвращает результат парсинга или 202 ACCEPTED статус код в том случае, когда задача находится в процессе.</p>
+<pre><code class="language-python">@router.get(&quot;/celery/task&quot;)
+def get_task_result(task_id: str):
+    result = AsyncResult(task_id, app=app)
+    if not result.ready():
+        return Response(HTTPStatus.ACCEPTED)
+    return result.get()
+</code></pre>
+<h3 id="dockerfile-backend">Dockerfile для backend</h3>
+<p>Создадим Dockerfile с нужной настройкой для создания докер-образа. Данный файл устанавливает зависимости, копирует все файлы из рабочей директории и запускает сервер.</p>
+<pre><code class="language-Dockerfile">FROM python:3.12-slim
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+ENTRYPOINT [ &quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8080&quot;]
+</code></pre>
+<h3 id="dockerfile">Dockerfile для парсера</h3>
+<p>Для парсера мы создадим <code>Dockerfile</code> и <code>Dockerfile.celery</code>. Первый для запуска REST API (он точно такой же, как и для backend), а второй для Celery.</p>
+<p>Ниже предсталвен <code>Dockerfile.celery</code>.</p>
+<pre><code class="language-Dockerfile">FROM python:3.12-slim
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+ENTRYPOINT [ &quot;celery&quot;, &quot;-A&quot;, &quot;tasks&quot;, &quot;worker&quot;, &quot;--loglevel=INFO&quot;]
+</code></pre>
+<h3 id="composeyaml">compose.yaml</h3>
+<pre><code class="language-yaml">version: &quot;3.9&quot;
+services:
+  backend:
+    build: &quot;${PWD}/lr1&quot;
+    ports:
+      - &quot;8080:8080&quot;
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgresql://postgres:password@db:5432/postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  parser:
+    build:
+      context: &quot;${PWD}/lr2/task2&quot;
+      dockerfile: Dockerfile.celery
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgresql://postgres:password@db:5432/postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  parser-api:
+    build:
+      context: &quot;${PWD}/lr2/task2&quot;
+      dockerfile: Dockerfile
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgresql://postgres:password@db:5432/postgres
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    container_name: postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    ports:
+      - &quot;5433:5432&quot;
+
+  redis:
+    image: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+volumes:
+  postgres_data:
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../lab-2/" class="btn btn-neutral float-left" title="Лабораторная работа #2"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../lab-2/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
