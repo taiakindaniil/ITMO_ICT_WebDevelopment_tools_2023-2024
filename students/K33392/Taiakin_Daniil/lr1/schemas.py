@@ -1,11 +1,15 @@
 from datetime import datetime
 from pydantic import BaseModel
+from typing import Literal
 
 from models import BookConditionEnum
 
+class ParseRequest(BaseModel):
+    parser: Literal["labirint", "book24"]
+
+
 class DeleteResponse(BaseModel):
     message: str
-
 
 
 class Token(BaseModel):

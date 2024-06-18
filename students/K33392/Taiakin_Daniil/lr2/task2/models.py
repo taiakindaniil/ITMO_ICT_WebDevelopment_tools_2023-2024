@@ -24,6 +24,9 @@ class Book(Base):
 
     tags = relationship("Tag", secondary="books_tags")
 
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class User(Base):
     __tablename__ = "users"

@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 load_dotenv()
 
-engine = create_async_engine(os.environ["ASYNC_SQLALCHEMY_DATABASE_URL"])
+engine = create_async_engine(os.environ["SQLALCHEMY_DATABASE_URL"])
 
 asyncSessionLocal = sessionmaker(
     class_=AsyncSession, autocommit=False, autoflush=False, bind=engine

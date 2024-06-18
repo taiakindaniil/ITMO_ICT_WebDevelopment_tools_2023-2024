@@ -1,0 +1,54 @@
+version: "3.9"
+services:
+  backend:
+    build: "${PWD}/lr1"
+    ports:
+      - "8080:8080"
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgresql://postgres:password@db:5432/postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+  
+  parser:
+    build:
+      context: "${PWD}/lr2/task2"
+      dockerfile: Dockerfile.celery
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgresql://postgres:password@db:5432/postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    
+  parser-api:
+    build:
+      context: "${PWD}/lr2/task2"
+      dockerfile: Dockerfile
+    environment:
+      - SQLALCHEMY_DATABASE_URL=postgresql://postgres:password@db:5432/postgres
+    depends_on:
+      - db
+  
+  db:
+    image: postgres
+    container_name: postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    ports:
+      - "5433:5432"
+  
+  redis:
+    image: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+volumes:
+  postgres_data:
